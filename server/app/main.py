@@ -9,6 +9,7 @@ from app.middlewares.error_handler import register_error_handlers
 from app.routes.auth_routes import router as auth_router
 from app.routes.meeting_routes import router as meeting_router
 from app.seed import seed
+from app.utils.api_response import ApiResponse
 
 
 @asynccontextmanager
@@ -29,6 +30,12 @@ app.add_middleware(
 )
 
 register_error_handlers(app)
+
+
+@app.get("/health")
+def health_check():
+    return ApiResponse(200, {"status": "ok"}, "Service is healthy")
+
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(meeting_router, prefix="/api/v1")
