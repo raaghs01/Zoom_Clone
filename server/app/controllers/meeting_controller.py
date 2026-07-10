@@ -188,7 +188,7 @@ def list_my_meetings(db: Session, user: User) -> ApiResponse:
     pmi = (
         db.query(Meeting)
         .filter(Meeting.host_id == user.id, Meeting.status == MeetingStatus.INSTANT.value)
-        .order_by(Meeting.created_at.asc())
+        .order_by(Meeting.created_at.asc(), Meeting.id.asc())
         .first()
     )
 
