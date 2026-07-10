@@ -1,0 +1,27 @@
+# Claude Code tooling (kept locally, not part of the submission)
+CLAUDE.md
+docs/CLAUDE_CODE_GUIDE.md
+
+# Python / FastAPI
+server/.venv/
+server/venv/
+server/env/
+**/__pycache__/
+*.pyc
+server/.env
+*.db
+*.sqlite3
+
+# Node / Next.js
+client/node_modules/
+client/.next/
+client/out/
+client/.env.local
+client/.env*.local
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
