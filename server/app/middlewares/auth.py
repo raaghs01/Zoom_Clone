@@ -36,3 +36,22 @@ def verify_jwt(request: Request, db: Session = Depends(get_db)):
         raise ApiError(401, "Unauthorized: user not found")
 
     return user
+
+
+def get_optional_user(request: Request, db: Session = Depends(get_db)):
+    from app.models.user import User  # local import: avoids circular import with models package
+
+    token = _extract_token(request)
+    if not token:
+        return None
+
+    try:
+        payload = decode_access_token(token)
+    except JWTError:
+        return None
+
+    user_id = payload.get("sub")
+    if user_id is None:
+        return None
+
+    return db.query(User).filter(User.id == int(user_id)).first()
