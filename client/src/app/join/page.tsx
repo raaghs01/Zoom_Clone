@@ -35,7 +35,8 @@ function JoinForm() {
       const res = await api.post(`/meetings/${encoded}/join`, {
         display_name: displayName.trim(),
       });
-      router.push(`/meeting/${res.data.data.meeting.meeting_code}`);
+      const { meeting, participant } = res.data.data;
+      router.push(`/meeting/${meeting.meeting_code}?pid=${participant.id}`);
     } catch (err) {
       const message = axios.isAxiosError(err) ? err.response?.data?.message : undefined;
       toast.error(message ?? "Couldn't find that meeting");
