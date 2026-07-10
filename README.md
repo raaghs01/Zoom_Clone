@@ -168,6 +168,8 @@ A `render.yaml` blueprint is included at the repo root:
 
 **Note on persistence:** Render's free tier has an ephemeral filesystem — the SQLite file resets on every deploy/restart. That's fine here since the app reseeds itself automatically on startup (idempotent), so the demo is always in a working state; it just won't retain data you create between restarts. For real persistence, add a paid Render disk and point `DATABASE_URL` at a path under its mount (e.g. `sqlite:////var/data/zoom_clone.db`).
 
+**Note on cold starts:** Render's free tier spins the backend down after ~15 minutes of inactivity. The first request after that can take up to ~60 seconds to respond while it wakes back up — the frontend itself loads instantly (Vercel doesn't sleep), but login/dashboard data will hang until the backend is awake. If you're evaluating this after a period of inactivity, please allow up to a minute on the first action.
+
 ### Frontend → Vercel
 
 1. Import this repo into [Vercel](https://vercel.com).
