@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, ChevronDown, Plus, Video } from "lucide-react";
+import { Calendar, ChevronDown, Loader2, Plus, Video } from "lucide-react";
 import toast from "react-hot-toast";
 
 import {
@@ -50,7 +50,7 @@ export function ActionTiles({ pmi }: ActionTilesProps) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-10">
+    <div className="flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
       <div className="flex flex-col items-center gap-2">
         <div className="flex items-center gap-1">
           <button
@@ -59,7 +59,11 @@ export function ActionTiles({ pmi }: ActionTilesProps) {
             disabled={creating}
             className="flex h-14 w-14 items-center justify-center rounded-2xl bg-zoom-orange text-white shadow-sm transition hover:brightness-95 disabled:opacity-60"
           >
-            <Video className="h-6 w-6" />
+            {creating ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <Video className="h-6 w-6" />
+            )}
           </button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

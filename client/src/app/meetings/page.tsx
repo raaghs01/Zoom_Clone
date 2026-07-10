@@ -146,8 +146,8 @@ export default function MeetingsPage() {
   }
 
   return (
-    <div className="flex h-full">
-      <div className="flex w-80 shrink-0 flex-col border-r">
+    <div className="flex h-full flex-col overflow-auto sm:flex-row sm:overflow-hidden">
+      <div className="flex w-full shrink-0 flex-col border-b sm:w-80 sm:border-b-0 sm:border-r">
         <div className="flex items-center justify-between p-4">
           <span className="rounded-full bg-zoom-blue/10 px-3 py-1 text-sm font-medium text-zoom-blue">
             Upcoming
@@ -162,7 +162,7 @@ export default function MeetingsPage() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto px-4">
+        <div className="px-4 sm:flex-1 sm:overflow-auto">
           {pmi && (
             <button
               type="button"
@@ -212,13 +212,13 @@ export default function MeetingsPage() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center p-10">
+      <div className="flex flex-1 flex-col items-center justify-center p-6 sm:p-10">
         {selected ? (
           <div className="w-full max-w-md text-center">
             <h1 className="text-2xl font-semibold text-gray-900">{selected.title}</h1>
             <p className="mt-1 text-sm text-gray-500">{selected.meeting_code}</p>
 
-            <div className="mt-6 flex justify-center gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button
                 onClick={() => router.push(`/meeting/${selected.meeting_code}`)}
                 className="bg-zoom-blue text-white hover:bg-zoom-blue/90"

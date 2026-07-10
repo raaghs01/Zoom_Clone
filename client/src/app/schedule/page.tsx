@@ -122,7 +122,7 @@ export default function SchedulePage() {
 
         <div className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-gray-700">When</span>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Input
               type="date"
               required
@@ -142,7 +142,7 @@ export default function SchedulePage() {
 
         <div className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-gray-700">Duration</span>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Select value={durationHours} onValueChange={setDurationHours}>
               <SelectTrigger className="w-32">
                 <SelectValue />

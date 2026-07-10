@@ -12,6 +12,8 @@ interface ParticipantsPanelProps {
   participants: Participant[];
   isHost: boolean;
   myParticipantId: number | null;
+  pendingIds: number[];
+  mutingAll: boolean;
   onMuteOne: (id: number) => void;
   onMuteAll: () => void;
   onRemoveOne: (id: number) => void;
@@ -23,6 +25,8 @@ export function ParticipantsPanel({
   participants,
   isHost,
   myParticipantId,
+  pendingIds,
+  mutingAll,
   onMuteOne,
   onMuteAll,
   onRemoveOne,
@@ -45,6 +49,7 @@ export function ParticipantsPanel({
           const isMe = p.id === myParticipantId;
           const label =
             p.role === "host" ? (isMe ? " (Host, me)" : " (Host)") : isMe ? " (me)" : "";
+          const isPending = pendingIds.includes(p.id);
 
           return (
             <div key={p.id} className="flex items-center justify-between px-4 py-3 hover:bg-white/5">
@@ -64,14 +69,16 @@ export function ParticipantsPanel({
                     <button
                       type="button"
                       onClick={() => onMuteOne(p.id)}
-                      className="text-xs text-gray-300 hover:text-white hover:underline"
+                      disabled={isPending}
+                      className="text-xs text-gray-300 hover:text-white hover:underline disabled:pointer-events-none disabled:opacity-50"
                     >
                       Mute
                     </button>
                     <button
                       type="button"
                       onClick={() => onRemoveOne(p.id)}
-                      className="text-xs text-red-400 hover:text-red-300 hover:underline"
+                      disabled={isPending}
+                      className="text-xs text-red-400 hover:text-red-300 hover:underline disabled:pointer-events-none disabled:opacity-50"
                     >
                       Remove
                     </button>
@@ -96,9 +103,10 @@ export function ParticipantsPanel({
           <Button
             size="sm"
             onClick={onMuteAll}
+            disabled={mutingAll}
             className="bg-zoom-blue text-white hover:bg-zoom-blue/90"
           >
-            Mute All
+            {mutingAll ? "Muting..." : "Mute All"}
           </Button>
         )}
         <Button

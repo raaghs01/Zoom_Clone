@@ -27,6 +27,7 @@ interface ControlBarProps {
   participantCount: number;
   onOpenParticipants: () => void;
   isHost: boolean;
+  ending: boolean;
   onEnd: () => void;
   onLeave: () => void;
 }
@@ -47,12 +48,12 @@ function ControlButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-1 rounded-lg px-3 py-2 text-xs text-gray-300 hover:bg-white/10",
+        "flex flex-col items-center gap-1 rounded-lg px-2 py-2 text-xs text-gray-300 hover:bg-white/10 sm:px-3",
         muted && "text-red-400"
       )}
     >
       <Icon className="h-5 w-5" />
-      {label}
+      <span className="hidden sm:inline">{label}</span>
     </button>
   );
 }
@@ -69,11 +70,12 @@ export function ControlBar({
   participantCount,
   onOpenParticipants,
   isHost,
+  ending,
   onEnd,
   onLeave,
 }: ControlBarProps) {
   return (
-    <div className="flex h-20 shrink-0 items-center justify-between bg-[#1c1c1c] px-6">
+    <div className="flex h-20 shrink-0 items-center justify-between gap-2 overflow-x-auto bg-[#1c1c1c] px-2 sm:px-6">
       <div className="flex items-center gap-1">
         <ControlButton
           icon={micOn ? Mic : MicOff}
@@ -112,10 +114,11 @@ export function ControlBar({
       <button
         type="button"
         onClick={isHost ? onEnd : onLeave}
-        className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+        disabled={ending}
+        className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
       >
         <PhoneOff className="h-4 w-4" />
-        {isHost ? "End" : "Leave"}
+        {isHost ? (ending ? "Ending..." : "End") : "Leave"}
       </button>
     </div>
   );

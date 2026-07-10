@@ -28,10 +28,10 @@ export function TopBar() {
   return (
     <header className="flex h-16 shrink-0 items-center gap-4 border-b bg-white px-4">
       <div className="flex items-center gap-4">
-        <span className="text-lg font-semibold text-meeting-dark">
+        <span className="whitespace-nowrap text-lg font-semibold text-meeting-dark">
           zoom <span className="font-normal text-gray-500">Workplace</span>
         </span>
-        <div className="flex items-center gap-1 text-gray-400">
+        <div className="hidden items-center gap-1 text-gray-400 sm:flex">
           <button
             type="button"
             className="rounded-full p-1.5 hover:bg-gray-100"
@@ -56,7 +56,7 @@ export function TopBar() {
         </div>
       </div>
 
-      <div className="flex flex-1 justify-center">
+      <div className="hidden flex-1 justify-center sm:flex">
         <div className="flex w-full max-w-sm items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-400">
           <Search className="h-4 w-4" />
           <span>Search</span>
@@ -64,8 +64,8 @@ export function TopBar() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <Button variant="outline" size="sm" className="rounded-full">
+      <div className="ml-auto flex items-center gap-3">
+        <Button variant="outline" size="sm" className="hidden rounded-full md:inline-flex">
           Upgrade to Pro
         </Button>
         <DropdownMenu>

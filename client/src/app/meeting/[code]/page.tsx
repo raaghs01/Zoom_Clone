@@ -47,6 +47,9 @@ function MeetingRoomInner() {
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [pendingIds, setPendingIds] = useState<number[]>([]);
+  const [mutingAll, setMutingAll] = useState(false);
+  const [ending, setEnding] = useState(false);
 
   const isHost = !!authUser && !!meeting && meeting.host.id === authUser.id;
   const myParticipantId = isHost
@@ -93,34 +96,44 @@ function MeetingRoomInner() {
   }, [meeting, hasHydrated, isHost, pidFromQuery, router]);
 
   async function handleMuteOne(participantId: number) {
+    setPendingIds((ids) => [...ids, participantId]);
     try {
       await api.post(`/meetings/${code}/participants/${participantId}/mute`);
-      loadParticipants();
+      await loadParticipants();
     } catch {
       toast.error("Couldn't mute that participant");
+    } finally {
+      setPendingIds((ids) => ids.filter((id) => id !== participantId));
     }
   }
 
   async function handleMuteAll() {
+    setMutingAll(true);
     try {
       await api.post(`/meetings/${code}/participants/mute-all`);
       toast.success("All participants muted");
-      loadParticipants();
+      await loadParticipants();
     } catch {
       toast.error("Couldn't mute all participants");
+    } finally {
+      setMutingAll(false);
     }
   }
 
   async function handleRemoveOne(participantId: number) {
+    setPendingIds((ids) => [...ids, participantId]);
     try {
       await api.post(`/meetings/${code}/participants/${participantId}/remove`);
-      loadParticipants();
+      await loadParticipants();
     } catch {
       toast.error("Couldn't remove that participant");
+    } finally {
+      setPendingIds((ids) => ids.filter((id) => id !== participantId));
     }
   }
 
   async function handleEnd() {
+    setEnding(true);
     try {
       await api.post(`/meetings/${code}/end`);
     } catch {
@@ -221,6 +234,8 @@ function MeetingRoomInner() {
           participants={participants}
           isHost={isHost}
           myParticipantId={myParticipantId}
+          pendingIds={pendingIds}
+          mutingAll={mutingAll}
           onMuteOne={handleMuteOne}
           onMuteAll={handleMuteAll}
           onRemoveOne={handleRemoveOne}
@@ -235,6 +250,7 @@ function MeetingRoomInner() {
         participantCount={participants.length}
         onOpenParticipants={() => setPanelOpen((v) => !v)}
         isHost={isHost}
+        ending={ending}
         onEnd={handleEnd}
         onLeave={handleLeave}
       />
