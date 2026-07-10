@@ -10,6 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
 
+function extractMeetingCode(input: string): string {
+  let value = input.trim();
+  if (value.includes("code=")) {
+    value = value.split("code=")[1] ?? value;
+    value = value.split("&")[0];
+  }
+  return value.trim();
+}
+
 function JoinForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,7 +39,7 @@ function JoinForm() {
 
     try {
       setLoading(true);
-      const encoded = encodeURIComponent(meetingId.trim());
+      const encoded = encodeURIComponent(extractMeetingCode(meetingId));
       await api.get(`/meetings/${encoded}`);
       const res = await api.post(`/meetings/${encoded}/join`, {
         display_name: displayName.trim(),
