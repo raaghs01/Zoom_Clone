@@ -1,14 +1,29 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, History, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/store/auth";
 
 export function TopBar() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
   const initial = user?.full_name?.charAt(0).toUpperCase() ?? "?";
+
+  function handleLogout() {
+    logout();
+    router.push("/login");
+  }
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-4 border-b bg-white px-4">
@@ -53,11 +68,21 @@ export function TopBar() {
         <Button variant="outline" size="sm" className="rounded-full">
           Upgrade to Pro
         </Button>
-        <Avatar className="h-9 w-9">
-          <AvatarFallback className="bg-avatar-green text-white">
-            {initial}
-          </AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button type="button" className="rounded-full focus:outline-none">
+              <Avatar className="h-9 w-9">
+                <AvatarFallback className="bg-avatar-green text-white">
+                  {initial}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {user && <DropdownMenuLabel>{user.full_name}</DropdownMenuLabel>}
+            <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

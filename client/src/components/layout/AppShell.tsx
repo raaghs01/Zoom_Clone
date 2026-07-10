@@ -1,14 +1,20 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
+import { useAuthStore } from "@/store/auth";
 
 const BARE_ROUTES = ["/login", "/signup"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
+  useEffect(() => {
+    useAuthStore.persist.rehydrate();
+  }, []);
   const isBare =
     BARE_ROUTES.includes(pathname) || pathname.startsWith("/meeting/");
 

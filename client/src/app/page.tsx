@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { ActionTiles } from "@/components/meeting/ActionTiles";
 import { MeetingCard } from "@/components/meeting/MeetingCard";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { api } from "@/lib/axios";
 import type { Meeting } from "@/lib/types";
 
@@ -20,6 +21,7 @@ function useClock() {
 }
 
 export default function Home() {
+  const isAuthed = useRequireAuth();
   const now = useClock();
   const [upcoming, setUpcoming] = useState<Meeting[]>([]);
   const [recent, setRecent] = useState<Meeting[]>([]);
@@ -27,6 +29,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isAuthed) return;
     let cancelled = false;
 
     async function load() {
@@ -37,7 +40,7 @@ export default function Home() {
         setRecent(res.data.data.recent);
         setPmi(res.data.data.pmi);
       } catch {
-        // Not logged in yet or request failed - dashboard just shows empty sections.
+        // Request failed - dashboard just shows empty sections.
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -47,7 +50,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isAuthed]);
 
   const time = now?.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) ?? "";
   const date =
@@ -56,6 +59,10 @@ export default function Home() {
       month: "long",
       day: "numeric",
     }) ?? "";
+
+  if (!isAuthed) {
+    return null;
+  }
 
   return (
     <div className="flex h-full flex-col items-center gap-10 overflow-auto p-10">
