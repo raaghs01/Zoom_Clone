@@ -32,7 +32,7 @@ app.add_middleware(
 register_error_handlers(app)
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     return ApiResponse(200, {"status": "ok"}, "Service is healthy")
 
