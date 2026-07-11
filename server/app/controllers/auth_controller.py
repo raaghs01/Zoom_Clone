@@ -1,8 +1,12 @@
 from sqlalchemy.orm import Session
 
+from app.controllers.meeting_controller import _generate_unique_meeting_code
+from app.models.meeting import Meeting
+from app.models.participant import Participant
 from app.models.user import User
 from app.utils.api_error import ApiError
 from app.utils.api_response import ApiResponse
+from app.utils.constants import MeetingStatus, ParticipantRole
 from app.utils.security import create_access_token, hash_password, verify_password
 from app.validators.auth import AuthOut, LoginInput, RegisterInput, UserOut
 
@@ -23,6 +27,26 @@ def register(db: Session, payload: RegisterInput) -> ApiResponse:
         password=hash_password(payload.password),
     )
     db.add(user)
+    db.flush()
+
+    pmi_meeting = Meeting(
+        meeting_code=_generate_unique_meeting_code(db),
+        title=f"{user.full_name}'s Personal Meeting Room",
+        host_id=user.id,
+        status=MeetingStatus.INSTANT.value,
+    )
+    db.add(pmi_meeting)
+    db.flush()
+
+    db.add(
+        Participant(
+            meeting_id=pmi_meeting.id,
+            user_id=user.id,
+            display_name=user.full_name,
+            role=ParticipantRole.HOST.value,
+        )
+    )
+
     db.commit()
     db.refresh(user)
 

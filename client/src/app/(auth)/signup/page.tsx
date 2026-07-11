@@ -10,11 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
-import { useAuthStore } from "@/store/auth";
 
 export default function SignupPage() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -25,16 +23,14 @@ export default function SignupPage() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await api.post("/auth/register", {
+      await api.post("/auth/register", {
         full_name: fullName,
         username,
         email,
         password,
       });
-      const { user, access_token } = res.data.data;
-      setAuth(user, access_token);
-      toast.success(`Welcome, ${user.full_name}`);
-      router.push("/");
+      toast.success("Account created! Please sign in.");
+      router.push("/login");
     } catch (err) {
       const message = axios.isAxiosError(err)
         ? err.response?.data?.errors?.[0]?.message ?? err.response?.data?.message
